@@ -1,36 +1,39 @@
 <?php
 function getSettings($querySettings) {
-	$querySettings = "SELECT * from settings";
-	return $querySettings;
+    $querySettings = "SELECT * from settings";
+    return $querySettings;
 }
 function fsize($bytes) { #Determine the size of the file, and print a human readable value
    if ($bytes < 1024) return $bytes.' B';
    elseif ($bytes < 1048576) return round($bytes / 1024, 2).' KiB';
    elseif ($bytes < 1073741824) return round($bytes / 1048576, 2).' MiB';
-   
+   elseif ($bytes < 1099511627776) return round($bytes / 1073741824, 2).' GiB';
    else return round($bytes / 1099511627776, 2).' TiB';
 }
 function format_time($t,$f=':') { // t = seconds, f = separator
   return sprintf("%02d%s%02d%s%02d", floor($t/3600), $f, ($t/60)%60, $f, $t%60);
 }
 function verifyId($column, $value) {
-	global $db;
-	$check = mysqli_query($db, "SELECT * FROM links WHERE `$column` = '$value'");
-	return mysqli_num_rows($check);
+    global $db;
+    $check = mysqli_query($db, "SELECT * FROM links WHERE `$column` = '$value'");
+    return mysqli_num_rows($check);
 }
-
+function verifyAlias($colOne, $colTwo, $valOne, $valTwo) {
+    global $db;
+    $check = mysqli_query($db, "SELECT * FROM links WHERE `$colOne` = '$valTwo' OR `$colTwo` = '$valTwo' OR `$colOne` = '$valOne'");
+    return mysqli_num_rows($check);
 }
 function e($value) {
     return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
 }
 function generateId() {
-	$id = base_convert(uniqid(), 10, 36);
+    $id = base_convert(uniqid(), 10, 36);
 
-	if(verifyId('gid', $id) > 0) {
-		generateId();
-	} else {
-		return $id;
-	}
+    if(verifyId('gid', $id) > 0) {
+        generateId();
+    } else {
+        return $id;
+    }
 }
 function validateAlphaDash($value)
 {
