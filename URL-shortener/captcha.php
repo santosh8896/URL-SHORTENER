@@ -5,6 +5,9 @@ header("Content-type: image/png");
 // Start the session
 session_start();
 
+// The string to select random characters
+$seed = str_split('abcdefghijklmnopqrstuvwxyz0123456789');
+
 // Randomize the characters
 shuffle($seed);
 
@@ -45,6 +48,8 @@ for($i = 0; $i < count($letters); $i++) {
 	// Generate an rgb random value, from light gray to white
 	$color = rand(0, 150);
 	
+	// Output the letters
+	imagestring($image, 5, $position[$i], mt_rand(9, 11), $letters[$i], imagecolorallocate($image, $color, $color, $color));
 }
 
 // Output the $image, don't save the file name, set quality
